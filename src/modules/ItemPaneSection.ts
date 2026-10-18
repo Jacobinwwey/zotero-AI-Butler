@@ -905,6 +905,7 @@ function renderItemPaneSection(
   ensureSidebarWorkspaceStyles(doc);
 
   body.style.cssText = `
+    margin: 0;
     padding: 0;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-size: 13px;
@@ -1174,13 +1175,13 @@ function fitSidebarShellToViewport(
   const view = doc.defaultView;
   if (!view) return;
 
-  const ownHeight = view.innerHeight || 0;
-  const topHeight = view.top?.innerHeight || 0;
-  const viewportHeight = Math.max(ownHeight, topHeight, 360);
   const rect = body.getBoundingClientRect();
   const bottomInset = 8;
-  const available = Math.floor(viewportHeight - rect.top - bottomInset);
-  const targetHeight = Math.max(320, available);
+  // The iframe owns the visible viewport; the host height includes Zotero's toolbars.
+  const available = Math.floor(
+    view.innerHeight - Math.max(0, rect.top) - bottomInset,
+  );
+  const targetHeight = Math.max(0, available);
 
   body.style.height = `${targetHeight}px`;
   body.style.minHeight = `${targetHeight}px`;
@@ -1246,6 +1247,9 @@ function canElementScrollVertically(
   deltaY: number,
 ): boolean {
   if (element.scrollHeight <= element.clientHeight + 1) return false;
+  const overflowY =
+    element.ownerDocument?.defaultView?.getComputedStyle(element)?.overflowY;
+  if (overflowY !== "auto" && overflowY !== "scroll") return false;
   if (deltaY < 0) return element.scrollTop > 0;
   if (deltaY > 0) {
     return element.scrollTop + element.clientHeight < element.scrollHeight - 1;
