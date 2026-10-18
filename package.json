@@ -41,7 +41,8 @@
     "test:i18n": "node ./scripts/check-i18n.mjs",
     "test:compat": "node --test test/compatibility.test.mjs",
     "test:compat:host": "node scripts/test-zotero-compat.mjs",
-    "test:pdf": "node --test test/pdfExtractionRecovery.test.mjs"
+    "test:pdf": "node --test test/pdfExtractionRecovery.test.mjs",
+    "test:onboarding": "node --test test/onboardingNavigation.test.mjs"
   },
   "dependencies": {
     "@fluent/bundle": "^0.19.1",
